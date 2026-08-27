@@ -1,5 +1,15 @@
 [
   {
+    "id": 1787823051605,
+    "title": "Fiba",
+    "category": "kredi",
+    "amount": 5608.61,
+    "dueDate": "2026-07-09",
+    "isPaid": false,
+    "totalInstallments": 12,
+    "currentInstallment": 5
+  },
+  {
     "id": 1787822408740,
     "title": "Akbank",
     "category": "kredi",
