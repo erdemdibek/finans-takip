@@ -20,6 +20,12 @@
         const saved = localStorage.getItem('gh_finans_config');
         return saved ? JSON.parse(saved) : { owner: '', repo: '', token: '' };
       });
+      
+      const [userPin, setUserPin] = useState(() => localStorage.getItem('app_pin') || '');
+      const [isAuthenticated, setIsAuthenticated] = useState(false);
+      const [inputPin, setInputPin] = useState('');
+      const [pinError, setPinError] = useState('');
+
       const [isConfigured, setIsConfigured] = useState(false);
       const [items, setItems] = useState([]);
       const [fileSha, setFileSha] = useState('');
@@ -27,6 +33,8 @@
       const [error, setError] = useState('');
       const [filterCategory, setFilterCategory] = useState('all');
       const [showAddModal, setShowAddModal] = useState(false);
+      const [showPinResetModal, setShowPinResetModal] = useState(false);
+      const [newPinInput, setNewPinInput] = useState('');
 
       const [form, setForm] = useState({
         title: '',
@@ -40,9 +48,48 @@
       useEffect(() => {
         if (config.owner && config.repo && config.token) {
           setIsConfigured(true);
-          fetchDataFromGitHub();
+          if (isAuthenticated) {
+            fetchDataFromGitHub();
+          }
         }
-      }, [isConfigured]);
+      }, [isConfigured, isAuthenticated]);
+
+      const handleSetInitialPin = (e) => {
+        e.preventDefault();
+        if (inputPin.trim().length < 4) {
+          setPinError('Şifre en az 4 karakter veya hane olmalıdır.');
+          return;
+        }
+        localStorage.setItem('app_pin', inputPin.trim());
+        setUserPin(inputPin.trim());
+        setIsAuthenticated(true);
+        setInputPin('');
+        setPinError('');
+      };
+
+      const handleVerifyPin = (e) => {
+        e.preventDefault();
+        if (inputPin.trim() === userPin) {
+          setIsAuthenticated(true);
+          setInputPin('');
+          setPinError('');
+        } else {
+          setPinError('Hatalı şifre! Lütfen tekrar deneyin.');
+        }
+      };
+
+      const handleChangePin = (e) => {
+        e.preventDefault();
+        if (newPinInput.trim().length < 4) {
+          alert('Yeni şifre en az 4 hane/karakter olmalıdır.');
+          return;
+        }
+        localStorage.setItem('app_pin', newPinInput.trim());
+        setUserPin(newPinInput.trim());
+        setShowPinResetModal(false);
+        setNewPinInput('');
+        alert('Şifreniz başarıyla güncellendi!');
+      };
 
       const fetchDataFromGitHub = async () => {
         setLoading(true);
@@ -109,6 +156,7 @@
         localStorage.removeItem('gh_finans_config');
         setConfig({ owner: '', repo: '', token: '' });
         setIsConfigured(false);
+        setIsAuthenticated(false);
         setItems([]);
       };
 
@@ -133,13 +181,7 @@
       };
 
       const togglePaid = (id) => {
-        const updated = items.map(item => {
-          if (item.id === id) {
-            // Taksitli kredi ise ödeme durumunu değiştirince veya sonraki taksite geçişte
-            return { ...item, isPaid: !item.isPaid };
-          }
-          return item;
-        });
+        const updated = items.map(item => item.id === id ? { ...item, isPaid: !item.isPaid } : item);
         saveToGitHub(updated);
       };
 
@@ -170,6 +212,7 @@
         setForm({ title: '', category: 'kredi', amount: '', dueDate: '', totalInstallments: '', currentInstallment: '' });
       };
 
+      // 1. GitHub Yapılandırması Yoksa
       if (!isConfigured) {
         return (
           <div className="min-h-screen flex items-center justify-center p-4">
@@ -180,7 +223,7 @@
               <form onSubmit={handleSaveConfig} className="space-y-3">
                 <div>
                   <label className="text-xs font-semibold text-slate-600 block mb-1">GitHub Kullanıcı Adı</label>
-                  <input type="text" required value={config.owner} onChange={e => setConfig({...config, owner: e.target.value.trim()})} className="w-full border rounded-xl p-2 text-sm" placeholder="Örn: kullanıcıAdın" />
+                  <input type="text" required value={config.owner} onChange={e => setConfig({...config, owner: e.target.value.trim()})} className="w-full border rounded-xl p-2 text-sm" placeholder="Örn: erdemdibek" />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-slate-600 block mb-1">Repo Adı</label>
@@ -197,52 +240,96 @@
         );
       }
 
-      // Kalan borç tutarı hesaplayıcı fonksiyon
+      // 2. Şifre Tanımlı Değilse (İlk Kurulum)
+      if (!userPin) {
+        return (
+          <div className="min-h-screen flex items-center justify-center p-4">
+            <div className="bg-white max-w-xs w-full p-6 rounded-2xl shadow-md border border-slate-200 space-y-4 text-center">
+              <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto text-xl">🔒</div>
+              <h1 className="text-lg font-bold text-slate-800">Uygulama Şifresi Belirleyin</h1>
+              <p className="text-xs text-slate-500">Girişlerde güvenliğinizi sağlamak için bir giriş şifresi (PIN) belirleyin.</p>
+              
+              <form onSubmit={handleSetInitialPin} className="space-y-3">
+                <input 
+                  type="password" 
+                  maxLength="8"
+                  placeholder="Şifrenizi Girin" 
+                  required 
+                  value={inputPin} 
+                  onChange={e => setInputPin(e.target.value)} 
+                  className="w-full border rounded-xl p-3 text-center text-lg tracking-widest font-mono" 
+                />
+                {pinError && <p className="text-xs text-rose-500">{pinError}</p>}
+                <button type="submit" className="w-full bg-indigo-600 text-white py-2.5 rounded-xl text-sm font-semibold">Şifreyi Kaydet ve Başla</button>
+              </form>
+            </div>
+          </div>
+        );
+      }
+
+      // 3. Giriş Şifresi Onayı Bekleniyorsa
+      if (!isAuthenticated) {
+        return (
+          <div className="min-h-screen flex items-center justify-center p-4">
+            <div className="bg-white max-w-xs w-full p-6 rounded-2xl shadow-md border border-slate-200 space-y-4 text-center">
+              <div className="w-12 h-12 bg-slate-100 text-slate-700 rounded-full flex items-center justify-center mx-auto text-xl">🔑</div>
+              <h1 className="text-lg font-bold text-slate-800">Kilitli Ekran</h1>
+              <p className="text-xs text-slate-500">Devam etmek için uygulamanızın şifresini girin.</p>
+              
+              <form onSubmit={handleVerifyPin} className="space-y-3">
+                <input 
+                  type="password" 
+                  maxLength="8"
+                  placeholder="••••" 
+                  required 
+                  autoFocus
+                  value={inputPin} 
+                  onChange={e => setInputPin(e.target.value)} 
+                  className="w-full border rounded-xl p-3 text-center text-xl tracking-widest font-mono" 
+                />
+                {pinError && <p className="text-xs text-rose-500">{pinError}</p>}
+                <button type="submit" className="w-full bg-slate-900 text-white py-2.5 rounded-xl text-sm font-semibold">Giriş Yap</button>
+              </form>
+            </div>
+          </div>
+        );
+      }
+
+      // Kalan borç tutarı hesaplayıcı
       const calculateRemainingDebt = (item) => {
         if (item.category === 'kredi' && item.totalInstallments && item.currentInstallment) {
           if (item.isPaid) {
-            // Bu ayki ödendiyse, kalan taksit sayısı: Total - Current
             const remainingCount = Math.max(0, item.totalInstallments - item.currentInstallment);
             return remainingCount * item.amount;
           } else {
-            // Bu ay henüz ödenmediyse, bu ay dahil kalan taksit sayısı: Total - Current + 1
             const remainingCount = Math.max(0, item.totalInstallments - item.currentInstallment + 1);
             return remainingCount * item.amount;
           }
         } else {
-          // Fatura veya kişisel borç ise sadece ödenmediyse tutarı ekle
           return item.isPaid ? 0 : item.amount;
         }
       };
 
-      // Genel Hesaplamalar
       const totalDebt = items.reduce((acc, curr) => acc + calculateRemainingDebt(curr), 0);
-      
       const totalKredi = items.filter(i => i.category === 'kredi').reduce((acc, curr) => acc + calculateRemainingDebt(curr), 0);
       const totalFatura = items.filter(i => i.category === 'fatura').reduce((acc, curr) => acc + calculateRemainingDebt(curr), 0);
       const totalKisisel = items.filter(i => i.category === 'kisisel').reduce((acc, curr) => acc + calculateRemainingDebt(curr), 0);
 
-      // Bu ay ödenecek toplam tutar
       const thisMonthDue = items.filter(i => !i.isPaid).reduce((acc, curr) => acc + curr.amount, 0);
-
-      const overdueCount = items.filter(i => {
-        if (i.isPaid) return false;
-        const today = new Date(); today.setHours(0,0,0,0);
-        const due = new Date(i.dueDate); due.setHours(0,0,0,0);
-        return due < today;
-      }).length;
 
       const filteredItems = items.filter(i => filterCategory === 'all' ? true : i.category === filterCategory);
 
       return (
         <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-6">
-          <div className="flex justify-between items-center bg-white p-4 rounded-2xl shadow-sm border">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl shadow-sm border">
             <div>
               <h1 className="text-xl font-bold">Borç & Takip Paneli</h1>
               <p className="text-xs text-slate-500">{config.owner}/{config.repo}</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
+              <button onClick={() => setShowPinResetModal(true)} className="p-2 bg-slate-100 rounded-xl text-xs font-semibold">🔑 Şifre Değiştir</button>
               <button onClick={fetchDataFromGitHub} className="p-2 bg-slate-100 rounded-xl text-xs font-semibold">🔄 Yenile</button>
+              <button onClick={() => setIsAuthenticated(false)} className="p-2 bg-amber-50 text-amber-700 rounded-xl text-xs font-semibold">🔒 Kilitle</button>
               <button onClick={handleLogout} className="p-2 bg-rose-50 text-rose-600 rounded-xl text-xs font-semibold">Çıkış</button>
               <button onClick={() => setShowAddModal(true)} className="px-3 py-2 bg-indigo-600 text-white rounded-xl text-xs font-semibold">+ Ekle</button>
             </div>
@@ -252,7 +339,6 @@
 
           {/* TOPLAM BORÇ KARTLARI */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
-            {/* TÜM GELECEK TAKSİTLER DAHİL GERÇEK TOPLAM BORÇ */}
             <div className="bg-slate-900 text-white p-5 rounded-2xl shadow-sm sm:col-span-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <div>
                 <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Gelecek Tüm Taksitler Dahil Toplam Kalan Borç</p>
@@ -264,7 +350,6 @@
               </div>
             </div>
 
-            {/* KATEGORİ BAZLI KALAN TOTAL BORÇLAR */}
             <div className="bg-white p-4 rounded-2xl border shadow-sm">
               <p className="text-xs font-semibold text-slate-400">Tüm Kredi Borçları</p>
               <p className="text-lg font-bold text-slate-800 mt-1">{totalKredi.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</p>
@@ -337,6 +422,7 @@
             </div>
           </div>
 
+          {/* EKLEME MODALI */}
           {showAddModal && (
             <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
               <div className="bg-white rounded-2xl p-5 max-w-sm w-full space-y-3">
@@ -361,6 +447,29 @@
                   <div className="flex justify-end gap-2 pt-2">
                     <button type="button" onClick={() => setShowAddModal(false)} className="px-3 py-1.5 rounded-xl bg-slate-100">İptal</button>
                     <button type="submit" disabled={loading} className="px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-semibold">{loading ? '...' : 'Kaydet'}</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* ŞİFRE DEĞİŞTİRME MODALI */}
+          {showPinResetModal && (
+            <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+              <div className="bg-white rounded-2xl p-5 max-w-sm w-full space-y-3">
+                <h3 className="font-bold text-sm">Uygulama Şifresini Değiştir</h3>
+                <form onSubmit={handleChangePin} className="space-y-3 text-xs">
+                  <input 
+                    type="password" 
+                    placeholder="Yeni Şifre" 
+                    required 
+                    value={newPinInput} 
+                    onChange={e => setNewPinInput(e.target.value)} 
+                    className="w-full border rounded-xl p-2 text-center text-lg font-mono" 
+                  />
+                  <div className="flex justify-end gap-2 pt-2">
+                    <button type="button" onClick={() => setShowPinResetModal(false)} className="px-3 py-1.5 rounded-xl bg-slate-100">İptal</button>
+                    <button type="submit" className="px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-semibold">Şifreyi Güncelle</button>
                   </div>
                 </form>
               </div>
