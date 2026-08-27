@@ -1,5 +1,15 @@
 [
   {
+    "id": 1787822381600,
+    "title": "Akbank",
+    "category": "kredi",
+    "amount": 6033.79,
+    "dueDate": "2026-08-15",
+    "isPaid": false,
+    "totalInstallments": 24,
+    "currentInstallment": 21
+  },
+  {
     "id": 1787822281315,
     "title": "İş Bankası",
     "category": "kredi",
