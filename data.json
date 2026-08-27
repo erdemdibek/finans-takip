@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": 1787822281315,
+    "title": "İş Bankası",
+    "category": "kredi",
+    "amount": 6085.53,
+    "dueDate": "2026-09-25",
+    "isPaid": false,
+    "totalInstallments": 36,
+    "currentInstallment": 36
+  }
+]
