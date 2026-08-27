@@ -1,5 +1,15 @@
 [
   {
+    "id": 1787823341206,
+    "title": "QNB",
+    "category": "kredi",
+    "amount": 7646.22,
+    "dueDate": "2026-08-24",
+    "isPaid": false,
+    "totalInstallments": 36,
+    "currentInstallment": 1
+  },
+  {
     "id": 1787823051605,
     "title": "Fiba",
     "category": "kredi",
