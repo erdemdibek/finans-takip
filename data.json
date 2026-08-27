@@ -37,6 +37,6 @@
     "dueDate": "2026-09-25",
     "isPaid": false,
     "totalInstallments": 36,
-    "currentInstallment": 36
+    "currentInstallment": 1
   }
 ]
