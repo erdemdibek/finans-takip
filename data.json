@@ -15,7 +15,7 @@
     "category": "kredi",
     "amount": 5608.61,
     "dueDate": "2026-07-09",
-    "isPaid": true,
+    "isPaid": false,
     "totalInstallments": 12,
     "currentInstallment": 5
   },
