@@ -205,7 +205,35 @@
       };
 
       const togglePaid = (id) => {
-        const updated = items.map(item => item.id === id ? { ...item, isPaid: !item.isPaid } : item);
+        const updated = items.map(item => {
+          if (item.id !== id) return item;
+
+          if (item.isPaid) {
+            return { ...item, isPaid: false };
+          }
+
+          if (item.category === 'kredi' && item.totalInstallments && item.currentInstallment) {
+            if (item.currentInstallment < item.totalInstallments) {
+              const nextInstallment = item.currentInstallment + 1;
+              
+              const currentDate = new Date(item.dueDate);
+              currentDate.setMonth(currentDate.getMonth() + 1);
+              const nextDueDate = currentDate.toISOString().split('T')[0];
+
+              return {
+                ...item,
+                currentInstallment: nextInstallment,
+                dueDate: nextDueDate,
+                isPaid: false
+              };
+            } else {
+              return { ...item, isPaid: true };
+            }
+          }
+
+          return { ...item, isPaid: true };
+        });
+
         saveToGitHub(updated);
       };
 
@@ -412,7 +440,7 @@
               </div>
             </div>
 
-            {/* İLERLEME ÇUBUĞU (MOTİVASYON) */}
+            {/* İLERLEME ÇUBUĞU */}
             <div className="space-y-2 relative z-10 pt-2 border-t border-slate-800/80">
               <div className="flex justify-between items-center text-xs">
                 <span className="text-slate-300 font-medium">Özgürlük İlerlemesi</span>
@@ -545,7 +573,7 @@
             </div>
           </div>
 
-          {/* MOBİL FAB (HIZLI EKLEME BUTONU) */}
+          {/* MOBİL FAB */}
           <button 
             onClick={() => setShowAddModal(true)} 
             className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-indigo-500 to-emerald-500 text-white rounded-full shadow-2xl shadow-indigo-500/50 flex items-center justify-center text-2xl font-bold transition-all active:scale-90 z-40 border border-white/20"
