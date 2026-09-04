@@ -24,10 +24,10 @@
     "title": "Akbank",
     "category": "kredi",
     "amount": 6033.79,
-    "dueDate": "2026-08-15",
+    "dueDate": "2026-09-15",
     "isPaid": false,
     "totalInstallments": 24,
-    "currentInstallment": 4
+    "currentInstallment": 5
   },
   {
     "id": 1787822281315,
