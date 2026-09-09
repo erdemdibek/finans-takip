@@ -1,5 +1,6 @@
 [
   {
+    "paidHistory": [],
     "id": 1788685824227,
     "title": "Deniz Kredi",
     "category": "kredi",
@@ -10,6 +11,7 @@
     "currentInstallment": 1
   },
   {
+    "paidHistory": [],
     "id": 1788685777635,
     "title": "Deniz Kart",
     "category": "kredi",
@@ -20,16 +22,25 @@
     "currentInstallment": 1
   },
   {
+    "paidHistory": [
+      {
+        "installmentNo": 1,
+        "amount": 7646.22,
+        "dueDate": "2026-08-24",
+        "paidDate": "2026-09-09"
+      }
+    ],
     "id": 1787823341206,
     "title": "QNB",
     "category": "kredi",
     "amount": 7646.22,
-    "dueDate": "2026-08-24",
+    "dueDate": "2026-09-24",
     "isPaid": false,
     "totalInstallments": 36,
-    "currentInstallment": 1
+    "currentInstallment": 2
   },
   {
+    "paidHistory": [],
     "id": 1787823051605,
     "title": "Fiba",
     "category": "kredi",
@@ -40,6 +51,7 @@
     "currentInstallment": 7
   },
   {
+    "paidHistory": [],
     "id": 1787822408740,
     "title": "Akbank",
     "category": "kredi",
@@ -50,6 +62,7 @@
     "currentInstallment": 5
   },
   {
+    "paidHistory": [],
     "id": 1787822281315,
     "title": "İş Bankası",
     "category": "kredi",
