@@ -1,14 +1,21 @@
 [
   {
-    "paidHistory": [],
+    "paidHistory": [
+      {
+        "installmentNo": 1,
+        "amount": 3278.59,
+        "dueDate": "2026-10-09",
+        "paidDate": "2026-10-07"
+      }
+    ],
     "id": 1788685824227,
     "title": "Deniz Kredi",
     "category": "kredi",
     "amount": 3278.59,
-    "dueDate": "2026-10-09",
+    "dueDate": "2026-11-09",
     "isPaid": false,
     "totalInstallments": 12,
-    "currentInstallment": 1
+    "currentInstallment": 2
   },
   {
     "paidHistory": [],
