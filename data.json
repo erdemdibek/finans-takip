@@ -18,15 +18,22 @@
     "currentInstallment": 2
   },
   {
-    "paidHistory": [],
+    "paidHistory": [
+      {
+        "installmentNo": 1,
+        "amount": 7347.31,
+        "dueDate": "2026-09-21",
+        "paidDate": "2026-10-07"
+      }
+    ],
     "id": 1788685777635,
     "title": "Deniz Kart",
     "category": "kredi",
     "amount": 7347.31,
-    "dueDate": "2026-09-21",
+    "dueDate": "2026-10-21",
     "isPaid": false,
     "totalInstallments": 36,
-    "currentInstallment": 1
+    "currentInstallment": 2
   },
   {
     "paidHistory": [
