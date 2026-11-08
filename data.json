@@ -54,16 +54,22 @@
         "amount": 7646.22,
         "dueDate": "2026-08-24",
         "paidDate": "2026-09-09"
+      },
+      {
+        "installmentNo": 2,
+        "amount": 7646.22,
+        "dueDate": "2026-09-24",
+        "paidDate": "2026-11-08"
       }
     ],
     "id": 1787823341206,
     "title": "QNB",
     "category": "kredi",
     "amount": 7646.22,
-    "dueDate": "2026-09-24",
+    "dueDate": "2026-10-24",
     "isPaid": false,
     "totalInstallments": 36,
-    "currentInstallment": 2
+    "currentInstallment": 3
   },
   {
     "paidHistory": [
