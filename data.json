@@ -102,16 +102,22 @@
         "amount": 6033.79,
         "dueDate": "2026-09-15",
         "paidDate": "2026-09-17"
+      },
+      {
+        "installmentNo": 6,
+        "amount": 6033.79,
+        "dueDate": "2026-10-15",
+        "paidDate": "2026-11-19"
       }
     ],
     "id": 1787822408740,
     "title": "Akbank",
     "category": "kredi",
     "amount": 6033.79,
-    "dueDate": "2026-10-15",
+    "dueDate": "2026-11-15",
     "isPaid": false,
     "totalInstallments": 24,
-    "currentInstallment": 6
+    "currentInstallment": 7
   },
   {
     "paidHistory": [],
