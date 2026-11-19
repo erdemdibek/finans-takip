@@ -120,14 +120,21 @@
     "currentInstallment": 7
   },
   {
-    "paidHistory": [],
+    "paidHistory": [
+      {
+        "installmentNo": 1,
+        "amount": 6085.53,
+        "dueDate": "2026-09-25",
+        "paidDate": "2026-11-19"
+      }
+    ],
     "id": 1787822281315,
     "title": "İş Bankası",
     "category": "kredi",
     "amount": 6085.53,
-    "dueDate": "2026-09-25",
+    "dueDate": "2026-10-25",
     "isPaid": false,
     "totalInstallments": 36,
-    "currentInstallment": 1
+    "currentInstallment": 2
   }
 ]
