@@ -78,16 +78,22 @@
         "amount": 5608.61,
         "dueDate": "2026-09-09",
         "paidDate": "2026-09-17"
+      },
+      {
+        "installmentNo": 8,
+        "amount": 5608.61,
+        "dueDate": "2026-10-09",
+        "paidDate": "2026-11-19"
       }
     ],
     "id": 1787823051605,
     "title": "Fiba",
     "category": "kredi",
     "amount": 5608.61,
-    "dueDate": "2026-10-09",
+    "dueDate": "2026-11-09",
     "isPaid": false,
     "totalInstallments": 12,
-    "currentInstallment": 8
+    "currentInstallment": 9
   },
   {
     "paidHistory": [
